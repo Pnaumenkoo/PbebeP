@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>nasz kącik</title>
+<style>
+:root{
+  --bg:#f6f0e8; --paper:#fffaf3; --ink:#332d29; --muted:#776e66;
+  --accent:#b86b61; --accent2:#d9a39a; --line:#eadfd3;
+  --shadow:0 18px 50px rgba(64,45,35,.10);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; min-height:100vh; color:var(--ink);
+  font-family: Georgia, "Times New Roman", serif;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(255,255,255,.30), transparent 28%),
+    radial-gradient(circle at 85% 80%, rgba(255,255,255,.22), transparent 30%),
+    var(--page-bg);
+  transition: background .35s ease;
+}
+body.page-home{--page-bg:#d8f2df;}
+body.page-us{--page-bg:#f7d9e5;}
+body.page-know{--page-bg:#d9ebf7;}
+body.page-adventure{--page-bg:#e5dcf4;}
+body.page-future{--page-bg:#f7edc8;}
+body.page-random{--page-bg:#f8dec9;}
+button{font:inherit}
+.app{max-width:900px;margin:auto;padding:42px 20px 60px}
+header{text-align:center;margin-bottom:34px}
+.eyebrow{font:12px/1.2 Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:clamp(42px,8vw,72px);font-weight:400;margin:8px 0 8px}
+.subtitle{font-size:18px;color:var(--muted);margin:0}
+.screen{display:none}
+.screen.active{display:block}
+.categories{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+.card{
+  border:1px solid var(--line); background:rgba(255,250,243,.86);
+  border-radius:24px;padding:24px;min-height:155px;text-align:left;
+  cursor:pointer;box-shadow:0 8px 25px rgba(64,45,35,.05);
+  transition:.2s transform,.2s box-shadow,.2s border-color;
+}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:var(--accent2)}
+.icon{font-size:28px}.card h2{font-size:23px;font-weight:400;margin:12px 0 6px}
+.card p{margin:0;color:var(--muted);font:14px/1.5 Arial,sans-serif}
+.question-wrap{max-width:720px;margin:20px auto}
+.category-label{font:12px Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);text-align:center}
+.question-card{
+  background:var(--paper);border:1px solid var(--line);border-radius:30px;
+  padding:clamp(30px,7vw,65px) clamp(24px,7vw,70px);
+  text-align:center;box-shadow:var(--shadow);min-height:360px;
+  display:flex;flex-direction:column;justify-content:center;
+}
+.question{font-size:clamp(27px,5vw,42px);line-height:1.22;font-weight:400;margin:20px 0 18px}
+.hint{font:14px/1.5 Arial,sans-serif;color:var(--muted);max-width:480px;margin:auto}
+.actions{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:24px}
+.btn{
+  border:1px solid var(--line);background:var(--paper);color:var(--ink);
+  border-radius:999px;padding:12px 18px;cursor:pointer;transition:.2s;
+}
+.btn:hover{transform:translateY(-1px);border-color:var(--accent2)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:white}
+.btn.saved{background:#e9d7c0;border-color:#e9d7c0}
+.back{display:inline-block;margin-bottom:18px;background:none;border:0;color:var(--muted);cursor:pointer;padding:5px}
+.favorites{margin-top:36px}
+.section-title{text-align:center;font-size:25px;font-weight:400;margin:0 0 14px}
+.saved-list{display:grid;gap:10px}
+.saved-item{
+  background:rgba(255,250,243,.8);border:1px solid var(--line);border-radius:16px;
+  padding:15px 17px;display:flex;justify-content:space-between;gap:15px;align-items:center
+}
+.saved-text{font-size:16px;line-height:1.4}
+.remove{border:0;background:none;color:var(--muted);cursor:pointer}
+.empty{text-align:center;color:var(--muted);font:14px Arial,sans-serif}
+.footer{text-align:center;margin-top:38px;color:#9b9188;font:12px Arial,sans-serif}
+@media(max-width:560px){.app{padding-top:28px}.categories{grid-template-columns:1fr}.card{min-height:125px}.question-card{min-height:420px}}
+</style>
+</head>
+<body class="page-home">
+<div class="app">
+  <header>
+    <div class="eyebrow">dla nas</div>
+    <h1>nasz kącik</h1>
+    <p class="subtitle">pytania, wspomnienia i rzeczy, których jeszcze o sobie nie wiemy</p>
+  </header>
+
+  <main>
+    <section id="home" class="screen active">
+      <div class="categories">
+        <button class="card" data-cat="us"><span class="icon">💗</span><h2>O nas</h2><p>Relacja, bliskość, wdzięczność i to, jak siebie widzimy.</p></button>
+        <button class="card" data-cat="know"><span class="icon">🌱</span><h2>Poznaj mnie</h2><p>Wartości, osobowość, dzieciństwo, emocje i przekonania.</p></button>
+        <button class="card" data-cat="adventure"><span class="icon">🗺️</span><h2>Nasze przygody</h2><p>Podróże, bikepacking, wspomnienia i historie, do których warto wracać.</p></button>
+        <button class="card" data-cat="future"><span class="icon">✨</span><h2>Przyszłość</h2><p>Marzenia, plany, hipotetyczne scenariusze i rzeczy do przeżycia.</p></button>
+        <button class="card" data-cat="random"><span class="icon">🎲</span><h2>Losowe</h2><p>Dziwne i zabawne pytania.</p></button>
+      </div>
+      <div class="favorites">
+        <h2 class="section-title">⭐ Nasze ulubione</h2>
+        <div id="savedList" class="saved-list"></div>
+      </div>
+    </section>
+
+    <section id="questionScreen" class="screen">
+      <button class="back" id="backBtn">← Kategorie</button>
+      <div class="question-wrap">
+        <div id="categoryLabel" class="category-label"></div>
+        <div class="question-card">
+          <div id="question" class="question"></div>
+          
+          <div class="actions">
+            <button class="btn primary" id="nextBtn">Losuj kolejne →</button>
+            <button class="btn" id="saveBtn">☆ Zapisz</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <div class="footer">zrobione tylko dla nas</div>
+</div>
+
+<script>
+const categories = {
+  us: {
+    name:"O nas",
+    questions:[
+      "Jakie było Twoje pierwsze wrażenie na mój temat?",
+      "Co najbardziej Cię we mnie zaskoczyło, kiedy lepiej mnie poznałeś?",
+      "Co najbardziej lubisz w naszej relacji?",
+      "Co Twoim zdaniem jest naszą największą mocną stroną jako pary?",
+      "W czym jesteśmy najbardziej podobni?",
+      "W czym najbardziej się różnimy?",
+      "Jaka moja cecha najbardziej Ci imponuje?",
+      "Jaka moja cecha jest dla Ciebie czasami trudna?",
+      "Co robię, dzięki czemu czujesz się kochany?",
+      "Czy jest coś, co robię, a czego prawdopodobnie nawet nie zauważam, ale bardzo to cenisz?",
+      "Kiedy ostatnio pomyślałeś: „Naprawdę lubię życie z tą osobą”?",
+      "Jaki jest Twój ulubiony wspólny moment?",
+      "Jaki moment naszej relacji najbardziej zapadł Ci w pamięć?",
+      "Czy jest coś, co chciałbyś, żebyśmy robili częściej?",
+      "Czy jest coś, czego chciałbyś, żebyśmy robili rzadziej?",
+      "Jak wyglądałby dla Ciebie idealny zwykły dzień razem?",
+      "Jak wyglądałby dla Ciebie idealny weekend?",
+      "Kiedy czujesz, że jesteśmy najbardziej zespołem?",
+      "W czym Twoim zdaniem dobrze się uzupełniamy?",
+      "W czym moglibyśmy lepiej się uzupełniać?",
+      "Czy jest coś, czego chciałbyś się ode mnie nauczyć?",
+      "Czy jest coś, czego Twoim zdaniem ja mogłabym nauczyć się od Ciebie?",
+      "W czym Twoim zdaniem dobrze się rozumiemy bez słów?",
+      "W jakich sytuacjach najtrudniej Ci mnie zrozumieć?",
+      "Czy jest coś, czego chciałbyś, żebym częściej Cię pytała?",
+      "Czy jest coś, o czym chciałbyś ze mną częściej rozmawiać?",
+      "Kiedy czujesz się najbardziej blisko mnie?",
+      "Co według Ciebie sprawia, że czujemy się blisko?",
+      "Co mogłoby sprawić, że jeszcze lepiej byśmy się rozumieli?",
+      "Jak myślisz, czego jeszcze o Tobie nie wiem?",
+      "Czy jest jakaś część Twojego charakteru, którą pokazujesz tylko bardzo bliskim osobom?",
+      "Jak myślisz, co najbardziej zmieniło się w nas od początku związku?",
+      "Co najbardziej podobało Ci się w początkach naszego związku?",
+      "Co podoba Ci się bardziej teraz niż na początku?",
+      "Czy jest coś, co chciałbyś przeżyć ze mną po raz pierwszy?",
+      "Jak chciałbyś, żeby wyglądało nasze życie za 5 lat?",
+      "Co chciałbyś, żebyśmy zawsze zachowali z obecnego etapu naszego związku?",
+      "Co chciałbyś, żebyśmy razem zmienili?",
+      "Co jest jedną małą rzeczą, którą moglibyśmy zrobić w tym tygodniu, żeby poczuć się bliżej?"
+    ]
+  },
+  know:{
+    name:"Poznaj mnie",
+    questions:[
+      "Co jest dla Ciebie najważniejsze w życiu?",
+      "Po czym poznajesz, że jesteś szczęśliwy?",
+      "Co dla Ciebie oznacza „udane życie”?",
+      "Jak definiujesz sukces?",
+      "Co jest dla Ciebie ważniejsze: bezpieczeństwo czy wolność?",
+      "Jakie cechy najbardziej cenisz w innych ludziach?",
+      "Jakiej cechy najbardziej nie tolerujesz u innych?",
+      "Czy uważasz, że ludzie mogą naprawdę się zmienić?",
+      "Co Twoim zdaniem najbardziej wpływa na to, jakim człowiekiem się stajemy?",
+      "Co jest dla Ciebie ważniejsze: szczerość czy delikatność?",
+      "Czy zawsze warto mówić prawdę?",
+      "Jak podchodzisz do konfliktów — wolisz je rozwiązać od razu czy potrzebujesz czasu?",
+      "Co sprawia, że czujesz się szanowany przez drugą osobę?",
+      "Co sprawia, że czujesz się niedoceniany?",
+      "Czego najbardziej potrzebujesz od partnera, kiedy masz trudny okres?",
+      "Co według Ciebie oznacza zaufanie?",
+      "Czy łatwo Ci zaufać drugiej osobie?",
+      "Co może sprawić, że stracisz do kogoś zaufanie?",
+      "Czy łatwo Ci przyznać się do błędu?",
+      "Co jest dla Ciebie trudniejsze: przeprosić czy wybaczyć?",
+      "Czy bardziej boisz się porażki czy zmarnowania swojego potencjału?",
+      "Co najbardziej Cię motywuje?",
+      "Co sprawia, że tracisz motywację?",
+      "Jaką granicę nauczyłeś się stawiać dopiero jako dorosły?",
+      "Co chciałbyś, żeby ludzie lepiej w Tobie rozumieli?",
+      "Jaka część Twojej osobowości jest najtrudniejsza do zrozumienia?",
+      "W czym najbardziej zmieniłeś się w ciągu ostatnich kilku lat?",
+      "Jakie jest Twoje najwcześniejsze wspomnienie?",
+      "Jakie wspomnienie z dzieciństwa zawsze poprawia Ci humor?",
+      "Kim chciałeś zostać, kiedy byłeś mały?",
+      "Jaką radę dałbyś sobie jako 10-latkowi?",
+      "Co powiedziałbyś sobie z czasów szkoły średniej?",
+      "Jak myślisz, czego najbardziej potrzebowałeś jako dziecko?",
+      "Czy jest coś z dzieciństwa, czego Ci brakuje?",
+      "Jakie przekonanie wyniesione z dzieciństwa zmieniłeś jako dorosły?",
+      "Jak reagujesz, kiedy jesteś zraniony?",
+      "Co sprawia, że czujesz się bezpiecznie przy drugiej osobie?",
+      "Co sprawia, że zamykasz się emocjonalnie?",
+      "Jakie doświadczenie najbardziej Cię zmieniło?",
+      "Czy jest coś, za co powinieneś być dla siebie bardziej wyrozumiały?"
+    ]
+  },
+  adventure:{
+    name:"Nasze przygody",
+    questions:[
+      "Jaki jest Twój ulubiony wspólny wyjazd?",
+      "Jaki był najlepszy moment podczas naszego ostatniego bikepackingu?",
+      "Jaki był najbardziej absurdalny moment podczas naszej podróży?",
+      "Kiedy podczas którejś podróży najbardziej się śmiałeś?",
+      "Jaki moment z naszej podróży chciałbyś przeżyć jeszcze raz?",
+      "Co podczas naszych podróży najbardziej Cię zaskoczyło?",
+      "Jaki był najpiękniejszy widok, który zobaczyliśmy razem?",
+      "Jakie miejsce odwiedzone razem najbardziej Ci się spodobało?",
+      "Do którego miejsca chciałbyś wrócić?",
+      "Jaka była nasza najlepsza spontaniczna decyzja?",
+      "Jaka była nasza najgorsza spontaniczna decyzja?",
+      "Jaki był najbardziej chaotyczny dzień, który razem przeżyliśmy?",
+      "Kiedy podczas podróży najbardziej czułeś, że jesteśmy dobrym zespołem?",
+      "Czy podczas któregoś wyjazdu zmieniło się coś w Twoim myśleniu o mnie?",
+      "Co odkryłeś o mnie podczas wspólnych podróży?",
+      "Co odkryłeś o sobie podczas naszych podróży?",
+      "Gdybyśmy mogli powtórzyć jeden dzień z naszej wspólnej historii, który byś wybrał?",
+      "Jaki moment naszej relacji chciałbyś zobaczyć jeszcze raz jak film?",
+      "Z czego jako para możemy być najbardziej dumni?",
+      "Co zrobiliśmy razem, czego wcześniej nie wyobrażałeś sobie robić?",
+      "Jaka była nasza najbardziej spontaniczna przygoda?",
+      "Gdzie jeszcze chciałbyś pojechać ze mną rowerem?",
+      "Jaki byłby nasz wymarzony bikepacking?",
+      "Gdybyśmy mieli miesiąc na podróż bez żadnych ograniczeń, dokąd pojechalibyśmy?",
+      "Jaki kraj chciałbyś odwiedzić ze mną?",
+      "Jakiej przygody jeszcze razem nie przeżyliśmy?",
+      "Co najbardziej lubisz w podróżowaniu ze mną?",
+      "Co moglibyśmy robić inaczej podczas kolejnych podróży?",
+      "Wolisz podróżować bardzo komfortowo czy mieć większą przygodę kosztem wygody?",
+      "Jak wyglądałaby nasza idealna 3-dniowa wyprawa rowerowa?",
+      "Gdybyśmy jutro mieli ruszyć w trasę, gdzie pojechalibyśmy?",
+      "Jakie miejsce na mapie wygląda jak coś, co powinniśmy kiedyś zobaczyć?",
+      "Jaki wspólny wyjazd wspominasz najlepiej i dlaczego?",
+      "Co jest ważniejsze podczas podróży: cel czy droga?",
+      "Jakie małe rzeczy najbardziej pamiętasz z naszych wyjazdów?",
+      "Jaka sytuacja podczas podróży najbardziej pokazała Ci mój charakter?",
+      "Czy jest miejsce, które odwiedziliśmy, a którego wcześniej zupełnie nie doceniałeś?",
+      "Gdybyśmy mogli zabrać jedną osobę na nasz kolejny bikepacking, kogo?",
+      "Jaki byłby najbardziej szalony wyjazd, na który zgodziłbyś się ze mną?",
+      "Jaką historię z naszych podróży będziemy prawdopodobnie opowiadać za 20 lat?"
+    ]
+  },
+  future:{
+    name:"Przyszłość",
+    questions:[
+      "Gdybyś jutro dostał 1 milion euro, co zrobiłbyś jako pierwsze?",
+      "Gdyby pieniądze nie miały znaczenia, jak wyglądałoby Twoje życie?",
+      "Gdybyś mógł przez rok mieszkać gdziekolwiek na świecie, gdzie byś mieszkał?",
+      "Gdybyś musiał zmienić zawód, co byś wybrał?",
+      "Gdybyś mógł nauczyć się jednej rzeczy natychmiast, co by to było?",
+      "Gdybyśmy mogli jutro wyjechać na rok, dokąd?",
+      "Gdybyś mógł cofnąć się o 10 lat, czy coś byś zmienił?",
+      "Gdybyś mógł zobaczyć jeden dzień swojej przyszłości, który dzień byś wybrał?",
+      "Gdybyś wiedział, że nie możesz ponieść porażki, czego byś spróbował?",
+      "Gdybyś miał tylko rok życia, co zmieniłbyś w swoim obecnym życiu?",
+      "Jak wyglądałby Twój idealny dom?",
+      "Wolałbyś mieszkać w centrum miasta, na przedmieściach czy gdzieś na odludziu?",
+      "Jak wyglądałby Twój idealny zwykły dzień za 10 lat?",
+      "Jak chciałbyś spędzać weekendy za 10 lat?",
+      "Jakie hobby chciałbyś mieć w przyszłości?",
+      "Jakiego nowego hobby moglibyśmy spróbować razem?",
+      "Jakie trzy rzeczy chciałbyś koniecznie zrobić w ciągu najbliższych 5 lat?",
+      "Jakie miejsce chciałbyś zobaczyć przed śmiercią?",
+      "Jakiej umiejętności chciałbyś nauczyć się razem ze mną?",
+      "Co według Ciebie powinno być naszym wspólnym celem?",
+      "Jak wyglądałoby nasze idealne życie, gdybyśmy mogli zaprojektować je od zera?",
+      "Co jest dla Ciebie ważniejsze w przyszłości: kariera, rodzina, podróże czy wolność?",
+      "Jak dużo spontaniczności chciałbyś mieć w przyszłym życiu?",
+      "Czy chciałbyś kiedyś mieszkać za granicą?",
+      "Czy wolałbyś mieć stabilne życie czy często wszystko zmieniać?",
+      "Jak wyglądałaby Twoja idealna emerytura?",
+      "Jakiej rzeczy najbardziej nie chciałbyś żałować na starość?",
+      "Jak myślisz, czego najbardziej będziesz żałował, jeśli tego nie zrobisz?",
+      "Jakie doświadczenie jest ważniejsze od posiadania rzeczy?",
+      "Co chciałbyś zrobić przynajmniej raz, nawet jeśli brzmi absurdalnie?",
+      "Jaki wspólny projekt moglibyśmy kiedyś zrobić?",
+      "Gdybyśmy mieli otworzyć razem biznes, co byśmy robili?",
+      "Gdybyśmy mogli przez rok nie pracować, jak spędzilibyśmy ten rok?",
+      "Gdybyśmy mogli przeprowadzić się jutro, gdzie?",
+      "Jak wyglądałoby nasze idealne życie bez ograniczeń finansowych?",
+      "Jak wyglądałoby nasze idealne życie przy bardzo ograniczonym budżecie?",
+      "Jakie 5 rzeczy chciałbyś, żebyśmy przeżyli razem w ciągu następnych kilku lat?",
+      "Czego chciałbyś nauczyć się przed 40. rokiem życia?",
+      "Jak chciałbyś, żeby wyglądało nasze życie za 10 lat?",
+      "Co chciałbyś, żeby nasze przyszłe „ja” pamiętało o obecnym etapie życia?"
+    ]
+  },
+  random:{
+    name:"Losowe",
+    questions:[
+      "Gdybyś mógł mieć jedną supermoc, jaką?",
+      "Gdyby zwierzęta mogły mówić, z którym chciałbyś porozmawiać?",
+      "Gdybyś musiał jeść jedno danie przez miesiąc, co wybierasz?",
+      "Jakie jedzenie jest zdecydowanie przeceniane?",
+      "Jakie jedzenie jest zdecydowanie niedoceniane?",
+      "Jaka jest Twoja najbardziej kontrowersyjna opinia dotycząca jedzenia?",
+      "Jaki film możesz oglądać nieskończoną ilość razy?",
+      "Jaki film wszyscy kochają, a Ty nie?",
+      "Jaki serial chciałbyś całkowicie zapomnieć, żeby obejrzeć go ponownie?",
+      "Gdyby nasze życie było filmem, jaki miałby tytuł?",
+      "Jaki aktor powinien zagrać Ciebie w filmie o Twoim życiu?",
+      "Jaki aktor powinien zagrać mnie?",
+      "Gdybyś mógł zamienić się ze mną życiem na jeden dzień, co chciałbyś sprawdzić?",
+      "Gdybyś miał opisać mnie trzema całkowicie przypadkowymi słowami, jakie byś wybrał?",
+      "Gdybyś miał opisać siebie trzema słowami, jakie byś wybrał?",
+      "Jaki byłby najgorszy biznes, jaki moglibyśmy razem otworzyć?",
+      "Jaki byłby najlepszy?",
+      "Gdybyśmy musieli razem wystąpić w reality show, jakie?",
+      "Kto z nas przeżyłby dłużej na bezludnej wyspie?",
+      "Kto z nas szybciej zgubiłby się w obcym mieście?",
+      "Kto z nas lepiej poradziłby sobie podczas apokalipsy zombie?",
+      "Jakie trzy rzeczy zabrałbyś na bezludną wyspę?",
+      "Gdybyś mógł mieć dowolne zwierzę jako pupila, co byś wybrał?",
+      "Gdybyś mógł przez jeden dzień żyć jako dowolna osoba, kogo wybierasz?",
+      "Gdybyś mógł odwiedzić dowolną epokę historyczną, którą?",
+      "Gdybyś mógł zobaczyć jedno wydarzenie historyczne na żywo, jakie?",
+      "Gdybyś mógł usunąć jedną rzecz ze świata, co by to było?",
+      "Gdybyś mógł stworzyć jedną nową zasadę dla całego świata, jaka?",
+      "Gdybyś miał przez rok mieszkać bez internetu, dałbyś radę?",
+      "Jaki zupełnie bezużyteczny talent chciałbyś mieć?",
+      "Jaki dziwny konkurs mógłbyś wygrać?",
+      "Jaka jest najbardziej absurdalna rzecz, którą zrobiłeś?",
+      "Jakie pytanie chciałbyś, żeby ktoś Ci kiedyś zadał?",
+      "Co jest jedną małą rzeczą, która zawsze poprawia Ci humor?",
+      "Jaka jest najbardziej losowa rzecz, której chciałbyś kiedyś spróbować?",
+      "Gdybyśmy mieli wymyślić własne święto, co byśmy świętowali?",
+      "Gdyby nasze mieszkanie mogło mówić, co powiedziałoby o nas?",
+      "Gdybyś miał wymyślić pseudonim dla naszego związku, jaki?",
+      "Jaki byłby najbardziej absurdalny wspólny projekt, który moglibyśmy zrobić?"
+    ]
+  }
+};
+
+let currentCategory = null;
+let currentQuestion = null;
+let lastIndex = -1;
+const saved = JSON.parse(localStorage.getItem("ourFavorites") || "[]");
+
+const $ = id => document.getElementById(id);
+
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  $(id).classList.add("active");
+  if(id === "home"){
+    document.body.className = "page-home";
+  } else {
+    const pageClass = {
+      us: "page-us",
+      know: "page-know",
+      adventure: "page-adventure",
+      future: "page-future",
+      random: "page-random"
+    }[currentCategory] || "page-home";
+    document.body.className = pageClass;
+  }
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function pickQuestion(){
+  const pool = currentCategory === "all"
+    ? Object.values(categories).flatMap(c=>c.questions)
+    : categories[currentCategory].questions;
+  if(pool.length === 1) return pool[0];
+  let index;
+  do { index = Math.floor(Math.random()*pool.length); } while(index === lastIndex);
+  lastIndex = index;
+  currentQuestion = pool[index];
+  $("question").textContent = currentQuestion;
+  $("categoryLabel").textContent = currentCategory === "all" ? "Wszystko" : categories[currentCategory].name;
+  const isSaved = saved.includes(currentQuestion);
+  $("saveBtn").textContent = isSaved ? "★ Zapisane" : "☆ Zapisz";
+  $("saveBtn").classList.toggle("saved",isSaved);
+}
+
+function openCategory(cat){
+  currentCategory = cat;
+  lastIndex = -1;
+  showScreen("questionScreen");
+  pickQuestion();
+}
+
+document.querySelectorAll("[data-cat]").forEach(btn=>{
+  btn.addEventListener("click",()=>openCategory(btn.dataset.cat));
+});
+
+$("nextBtn").addEventListener("click",pickQuestion);
+$("backBtn").addEventListener("click",()=>{renderSaved();showScreen("home")});
+
+$("saveBtn").addEventListener("click",()=>{
+  const i = saved.indexOf(currentQuestion);
+  if(i >= 0) saved.splice(i,1);
+  else saved.push(currentQuestion);
+  localStorage.setItem("ourFavorites",JSON.stringify(saved));
+  pickQuestion(); renderSaved();
+});
+
+function renderSaved(){
+  const box=$("savedList");
+  if(!saved.length){
+    box.innerHTML='<div class="empty">Jeszcze nic tutaj nie ma. Zapisz pytanie, do którego chcesz kiedyś wrócić.</div>';
+    return;
+  }
+  box.innerHTML="";
+  saved.forEach((q,i)=>{
+    const row=document.createElement("div");
+    row.className="saved-item";
+    row.innerHTML=`<div class="saved-text">${q}</div><button class="remove" aria-label="Usuń">×</button>`;
+    row.querySelector(".remove").onclick=()=>{
+      saved.splice(i,1);
+      localStorage.setItem("ourFavorites",JSON.stringify(saved));
+      renderSaved();
+    };
+    box.appendChild(row);
+  });
+}
+renderSaved();
+</script>
+</body>
+</html>
