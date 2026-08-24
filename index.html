@@ -74,6 +74,12 @@ h1{font-size:clamp(42px,8vw,72px);font-weight:400;margin:8px 0 8px}
 .remove{border:0;background:none;color:var(--muted);cursor:pointer}
 .empty{text-align:center;color:var(--muted);font:14px Arial,sans-serif}
 .footer{text-align:center;margin-top:38px;color:#9b9188;font:12px Arial,sans-serif}
+
+.quick-random{margin-bottom:18px}
+.random-big{width:100%;display:flex;align-items:center;gap:16px;text-align:left;border:1px solid var(--line);background:rgba(255,250,243,.9);border-radius:22px;padding:17px 20px;cursor:pointer;box-shadow:0 8px 25px rgba(64,45,35,.05);transition:.2s}
+.random-big:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:var(--accent2)}
+.random-big span{font-size:29px}.random-big div{flex:1}.random-big strong{display:block;font-size:21px;font-weight:400}.random-big small{display:block;margin-top:4px;color:var(--muted);font:13px/1.4 Arial,sans-serif}.random-big b{font-size:22px;font-weight:400;color:var(--accent)}
+.custom-wrap{max-width:720px;margin:20px auto}.custom-card{background:var(--paper);border:1px solid var(--line);border-radius:30px;padding:30px;box-shadow:var(--shadow);text-align:center}.custom-card h2{font-size:28px;font-weight:400;margin:0 0 8px}.custom-card p{font:14px/1.5 Arial,sans-serif;color:var(--muted);max-width:560px;margin:0 auto 20px}.custom-card textarea{width:100%;min-height:125px;resize:vertical;border:1px solid var(--line);background:#fffdf9;border-radius:16px;padding:15px;font:16px/1.5 Arial,sans-serif;color:var(--ink);outline:none;margin-bottom:12px}.custom-card textarea:focus{border-color:var(--accent2);box-shadow:0 0 0 3px rgba(216,163,154,.15)}.custom-saved{margin-top:34px}
 @media(max-width:560px){.app{padding-top:28px}.categories{grid-template-columns:1fr}.card{min-height:125px}.question-card{min-height:420px}}
 </style>
 </head>
@@ -87,16 +93,37 @@ h1{font-size:clamp(42px,8vw,72px);font-weight:400;margin:8px 0 8px}
 
   <main>
     <section id="home" class="screen active">
+      <div class="quick-random">
+        <button class="random-big" id="randomAllBtn"><span>🎲</span><div><strong>Losuj pytanie</strong><small>Losuj pytanie bez wybierania kategorii.</small></div><b>→</b></button>
+      </div>
       <div class="categories">
         <button class="card" data-cat="us"><span class="icon">💗</span><h2>O nas</h2><p>Relacja, bliskość, wdzięczność i to, jak siebie widzimy.</p></button>
         <button class="card" data-cat="know"><span class="icon">🌱</span><h2>Poznaj mnie</h2><p>Wartości, osobowość, dzieciństwo, emocje i przekonania.</p></button>
         <button class="card" data-cat="adventure"><span class="icon">🗺️</span><h2>Nasze przygody</h2><p>Podróże, bikepacking, wspomnienia i historie, do których warto wracać.</p></button>
         <button class="card" data-cat="future"><span class="icon">✨</span><h2>Przyszłość</h2><p>Marzenia, plany, hipotetyczne scenariusze i rzeczy do przeżycia.</p></button>
-        <button class="card" data-cat="random"><span class="icon">🎲</span><h2>Losowe</h2><p>Dziwne i zabawne pytania.</p></button>
+        <button class="card" data-cat="random"><span class="icon">😀</span><h2>Heheszki</h2><p>Dziwne i zabawne pytania.</p></button>
+        <button class="card" data-cat="custom"><span class="icon">💡</span><h2>Zaproponuj pytanie</h2><p>Wymyśl własne pytanie i zachowaj je tutaj.</p></button>
       </div>
       <div class="favorites">
         <h2 class="section-title">⭐ Nasze ulubione</h2>
         <div id="savedList" class="saved-list"></div>
+      </div>
+    </section>
+
+    <section id="customScreen" class="screen">
+      <button class="back" id="customBackBtn">← Kategorie</button>
+      <div class="custom-wrap">
+        <div class="category-label">Zaproponuj pytanie</div>
+        <div class="custom-card">
+          <h2>Masz własne pytanie?</h2>
+          <p>Wpisz je tutaj. Zostanie zapisane w tej przeglądarce, więc będzie tutaj także po zamknięciu strony.</p>
+          <textarea id="customInput" maxlength="500" placeholder="Np. Co chciałbyś, żebyśmy zrobili razem w przyszłym roku?"></textarea>
+          <button class="btn primary" id="addCustomBtn">＋ Zapisz pytanie</button>
+        </div>
+        <div class="custom-saved">
+          <h2 class="section-title">💡 Zapisane pytania</h2>
+          <div id="customList" class="saved-list"></div>
+        </div>
       </div>
     </section>
 
@@ -161,7 +188,28 @@ const categories = {
       "Jak chciałbyś, żeby wyglądało nasze życie za 5 lat?",
       "Co chciałbyś, żebyśmy zawsze zachowali z obecnego etapu naszego związku?",
       "Co chciałbyś, żebyśmy razem zmienili?",
-      "Co jest jedną małą rzeczą, którą moglibyśmy zrobić w tym tygodniu, żeby poczuć się bliżej?"
+      "Co jest jedną małą rzeczą, którą moglibyśmy zrobić w tym tygodniu, żeby poczuć się bliżej?",
+      "Co chciałbyś, żebyśmy częściej zauważali w sobie nawzajem?",
+      "Jaki rodzaj wspólnego czasu daje Ci najwięcej energii?",
+      "Co według Ciebie sprawia, że dom jest dobrym miejscem do życia dla dwojga?",
+      "Jak możemy lepiej wspierać się w codziennym stresie?",
+      "Co jest dla Ciebie ważniejsze: wspólne zainteresowania czy wspólne wartości?",
+      "Jak poznajesz, że między nami coś jest nie tak?",
+      "Co pomaga Ci wrócić do bliskości po trudnej rozmowie?",
+      "Jak wyglądałoby nasze idealne świętowanie małych sukcesów?",
+      "Jaki komplement ode mnie najbardziej zapamiętałeś?",
+      "Co chciałbyś, żebym robiła, kiedy potrzebujesz wsparcia?",
+      "Jaką wspólną tradycję moglibyśmy stworzyć tylko dla nas?",
+      "Co według Ciebie robimy lepiej niż na początku związku?",
+      "W jakiej sytuacji ostatnio poczułeś, że naprawdę Cię rozumiem?",
+      "Co chciałbyś, żebyśmy robili, nawet kiedy będziemy bardzo zajęci?",
+      "Jaki mały rytuał mógłby poprawić nasze zwykłe wieczory?",
+      "Co Twoim zdaniem najbardziej buduje przyjaźń w związku?",
+      "Jak możemy zadbać o to, żeby nadal być siebie ciekawi za kilka lat?",
+      "Co chciałbyś, żebyśmy kiedyś wspominali jako naszą najlepszą epokę?",
+      "Jaka różnica między nami okazała się ostatecznie czymś dobrym?",
+      "Za co chciałbyś mi dzisiaj podziękować?",
+      "Jaka jedna rzecz sprawia, że nasze życie razem jest bardziej nasze?"
     ]
   },
   know:{
@@ -206,7 +254,27 @@ const categories = {
       "Co sprawia, że czujesz się bezpiecznie przy drugiej osobie?",
       "Co sprawia, że zamykasz się emocjonalnie?",
       "Jakie doświadczenie najbardziej Cię zmieniło?",
-      "Czy jest coś, za co powinieneś być dla siebie bardziej wyrozumiały?"
+      "Czy jest coś, za co powinieneś być dla siebie bardziej wyrozumiały?",
+      "Co najbardziej daje Ci poczucie sensu?",
+      "Jakie wartości są dla Ciebie nie do negocjacji?",
+      "Co Twoim zdaniem ludzie zbyt często traktują jako oczywistość?",
+      "Czy wolisz być rozumiany czy akceptowany, jeśli nie można mieć obu?",
+      "Co najczęściej robisz, kiedy nie wiesz, co czujesz?",
+      "Jak reagujesz, kiedy czujesz, że tracisz kontrolę?",
+      "Co najbardziej pomaga Ci odzyskać spokój?",
+      "Jakie zachowanie innych ludzi najbardziej Cię wzrusza?",
+      "Czy uważasz, że pierwsze wrażenie jest zwykle trafne?",
+      "Jakie doświadczenie nauczyło Cię najbardziej ufać własnym decyzjom?",
+      "Co jest dla Ciebie oznaką dojrzałości emocjonalnej?",
+      "Czy łatwiej Ci mówić o tym, czego chcesz, czy o tym, czego nie chcesz?",
+      "Jaką rzecz o sobie zaakceptowałeś dopiero z czasem?",
+      "Czy bardziej cenisz spontaniczność czy przewidywalność? Dlaczego?",
+      "Jak wyglądałoby życie, które naprawdę byłoby zgodne z Twoimi wartościami?",
+      "Co chciałbyś w sobie pielęgnować przez całe życie?",
+      "Jaka opinia innych ludzi ma na Ciebie największy wpływ?",
+      "Co robisz, kiedy musisz wybrać między tym, czego chcesz, a tym, co uważasz za słuszne?",
+      "Jakie zachowanie uważasz za oznakę prawdziwej odwagi?",
+      "Co chciałbyś lepiej rozumieć o samym sobie?",
     ]
   },
   adventure:{
@@ -251,7 +319,27 @@ const categories = {
       "Czy jest miejsce, które odwiedziliśmy, a którego wcześniej zupełnie nie doceniałeś?",
       "Gdybyśmy mogli zabrać jedną osobę na nasz kolejny bikepacking, kogo?",
       "Jaki byłby najbardziej szalony wyjazd, na który zgodziłbyś się ze mną?",
-      "Jaką historię z naszych podróży będziemy prawdopodobnie opowiadać za 20 lat?"
+      "Jaką historię z naszych podróży będziemy prawdopodobnie opowiadać za 20 lat?",
+      "Jaki mały szczegół z któregoś wyjazdu pamiętasz do dziś?",
+      "Który etap naszej trasy był najbardziej satysfakcjonujący?",
+      "Jaki moment podczas podróży był trudny, ale teraz dobrze go wspominasz?",
+      "Gdybyśmy mieli zrobić album z naszych podróży, jaki byłby jego tytuł?",
+      "Jaki zapach najbardziej kojarzy Ci się z naszymi wyjazdami?",
+      "Jaki posiłek zjedzony podczas podróży pamiętasz najlepiej?",
+      "Który dzień naszej wyprawy miał najlepszy klimat?",
+      "Jaki błąd podczas podróży okazał się zabawną historią?",
+      "Gdybyśmy mieli wybrać jedną trasę jako naszą tradycyjną trasę, jaka by była?",
+      "Jakie miejsce chcielibyśmy zobaczyć o różnych porach roku?",
+      "Czy wolisz odkrywać nowe miejsce czy wracać do ulubionego?",
+      "Jaki typ krajobrazu najbardziej pasuje do naszych wspólnych wyjazdów?",
+      "Jak wyglądałaby nasza idealna wyprawa bez rowerów?",
+      "Jaki sprzęt na naszych wyprawach najbardziej doceniasz?",
+      "Co podczas podróży najłatwiej wyprowadza Cię z równowagi?",
+      "Jaką jedną rzecz zawsze powinniśmy mieć ze sobą na bikepackingu?",
+      "Gdybyśmy mieli zrobić spontaniczną wyprawę w ten weekend, co byłoby jej motywem?",
+      "Jakie miejsce chcielibyśmy kiedyś odwiedzić tylko po to, żeby dobrze zjeść?",
+      "Jaki wspólny wyjazd byłby dla Ciebie idealnym sposobem na świętowanie rocznicy?",
+      "Jak myślisz, jaka będzie nasza najbardziej pamiętna przygoda za 10 lat?",
     ]
   },
   future:{
@@ -296,7 +384,27 @@ const categories = {
       "Jakie 5 rzeczy chciałbyś, żebyśmy przeżyli razem w ciągu następnych kilku lat?",
       "Czego chciałbyś nauczyć się przed 40. rokiem życia?",
       "Jak chciałbyś, żeby wyglądało nasze życie za 10 lat?",
-      "Co chciałbyś, żeby nasze przyszłe „ja” pamiętało o obecnym etapie życia?"
+      "Co chciałbyś, żeby nasze przyszłe „ja” pamiętało o obecnym etapie życia?",
+      "Jakie trzy rzeczy chciałbyś mieć w swoim idealnym życiu codziennym?",
+      "Czy chciałbyś kiedyś nauczyć się nowego języka razem ze mną? Jakiego?",
+      "Jak wyglądałby nasz idealny miesiąc bez pracy?",
+      "Jaki kraj mógłby stać się naszym miejscem na dłuższy pobyt?",
+      "Jakie wspólne marzenie wydaje Ci się dziś najbardziej ekscytujące?",
+      "Co chciałbyś robić częściej, kiedy będziemy mieli więcej wolnego czasu?",
+      "Jakie doświadczenie chciałbyś przeżyć przed 30., 40. albo 50. rokiem życia?",
+      "Jak wyobrażasz sobie nasz zwykły wieczór za 10 lat?",
+      "Co chciałbyś kiedyś zbudować lub stworzyć od zera?",
+      "Jakie miejsce mogłoby być naszym idealnym domem na miesiąc?",
+      "Czy chciałbyś kiedyś zrobić bardzo długą podróż, np. kilka miesięcy? Dokąd?",
+      "Jakie hobby chciałbyś rozwijać przez wiele lat?",
+      "Co chciałbyś, żeby było większą częścią naszego życia za kilka lat?",
+      "Czego zdecydowanie nie chciałbyś poświęcić dla kariery?",
+      "Jak wyglądałoby nasze idealne lato?",
+      "Jak wyglądałaby nasza idealna zima?",
+      "Jaki wspólny cel byłby dla nas wystarczająco ambitny, ale nadal przyjemny?",
+      "Gdybyśmy mieli stworzyć własną tradycję na każdy rok, co byśmy robili?",
+      "Jakie jedno ryzyko chciałbyś kiedyś podjąć?",
+      "Jak chciałbyś, żebyśmy dbali o nasze wspólne przygody, kiedy będziemy starsi?",
     ]
   },
   random:{
@@ -340,7 +448,28 @@ const categories = {
       "Gdybyśmy mieli wymyślić własne święto, co byśmy świętowali?",
       "Gdyby nasze mieszkanie mogło mówić, co powiedziałoby o nas?",
       "Gdybyś miał wymyślić pseudonim dla naszego związku, jaki?",
-      "Jaki byłby najbardziej absurdalny wspólny projekt, który moglibyśmy zrobić?"
+      "Jaki byłby najbardziej absurdalny wspólny projekt, który moglibyśmy zrobić?",
+      "Gdybyś mógł przez tydzień zamienić się życiem ze mną, co sprawdziłbyś jako pierwsze?",
+      "Jaka rzecz jest Twoim zdaniem absolutnie bez sensu, ale ludzie i tak ją uwielbiają?",
+      "Gdybyśmy mieli własną restaurację, co byłoby jej specjalnością?",
+      "Jakie trzy rzeczy najlepiej opisują Twój idealny dzień?",
+      "Gdybyś mógł teleportować się teraz w dowolne miejsce, gdzie?",
+      "Jakie zwierzę najbardziej pasowałoby do Twojego charakteru?",
+      "Jaki byłby najgorszy pseudonim, jaki można Ci nadać?",
+      "Gdybyśmy mieli razem prowadzić kanał na YouTube, o czym by był?",
+      "Jaki przedmiot w naszym domu powinien dostać imię?",
+      "Gdybyś mógł usunąć jedną irytującą czynność z codziennego życia, co wybierasz?",
+      "Jaki byłby Twój idealny dzień, gdyby obowiązywały tylko trzy zasady?",
+      "Gdybyśmy mieli stworzyć własną grę planszową, na czym by polegała?",
+      "Jaki absurdalny talent mógłby uratować Cię w dziwnej sytuacji?",
+      "Gdybyś mógł zamienić jeden dzień tygodnia na drugi, co byś zmienił?",
+      "Jaki smak lodów najlepiej opisuje Twoją osobowość?",
+      "Gdybyśmy mieli zostać ekspertami w czymś kompletnie niepotrzebnym, w czym?",
+      "Jaki przedmiot zabrałbyś na księżyc, jeśli nie musiałby być praktyczny?",
+      "Gdybyś miał wymyślić nowe słowo, co by oznaczało?",
+      "Jaki byłby najdziwniejszy sposób na spędzenie wspólnego wieczoru?",
+      "Gdybyśmy mieli przez jeden dzień mówić tylko pytaniami, kto pierwszy by się poddał?",
+      "Gdyby nasz związek miał własny smak, jaki by był?"
     ]
   }
 };
@@ -349,6 +478,7 @@ let currentCategory = null;
 let currentQuestion = null;
 let lastIndex = -1;
 const saved = JSON.parse(localStorage.getItem("ourFavorites") || "[]");
+let customQuestions = JSON.parse(localStorage.getItem("ourCustomQuestions") || "[]");
 
 const $ = id => document.getElementById(id);
 
@@ -363,7 +493,9 @@ function showScreen(id){
       know: "page-know",
       adventure: "page-adventure",
       future: "page-future",
-      random: "page-random"
+      random: "page-random",
+      all: "page-random",
+      custom: "page-random"
     }[currentCategory] || "page-home";
     document.body.className = pageClass;
   }
@@ -387,6 +519,7 @@ function pickQuestion(){
 }
 
 function openCategory(cat){
+  if(cat === "custom"){ showScreen("customScreen"); renderCustom(); return; }
   currentCategory = cat;
   lastIndex = -1;
   showScreen("questionScreen");
@@ -408,6 +541,52 @@ $("saveBtn").addEventListener("click",()=>{
   pickQuestion(); renderSaved();
 });
 
+$("randomAllBtn").addEventListener("click",()=>{
+  currentCategory = "all";
+  lastIndex = -1;
+  showScreen("questionScreen");
+  pickQuestion();
+});
+
+$("customBackBtn").addEventListener("click",()=>{ renderSaved(); showScreen("home"); });
+$("addCustomBtn").addEventListener("click",addCustomQuestion);
+$("customInput").addEventListener("keydown",e=>{ if((e.ctrlKey||e.metaKey) && e.key === "Enter") addCustomQuestion(); });
+
+function addCustomQuestion(){
+  const input=$("customInput");
+  const q=input.value.trim();
+  if(!q) return;
+  if(customQuestions.includes(q)){ input.value=""; return; }
+  customQuestions.unshift(q);
+  localStorage.setItem("ourCustomQuestions",JSON.stringify(customQuestions));
+  input.value="";
+  renderCustom();
+}
+
+function renderCustom(){
+  const box=$("customList");
+  if(!customQuestions.length){
+    box.innerHTML='<div class="empty">Nie masz jeszcze własnych pytań. Wymyśl pierwsze powyżej.</div>';
+    return;
+  }
+  box.innerHTML="";
+  customQuestions.forEach((q,i)=>{
+    const row=document.createElement("div");
+    row.className="saved-item";
+    row.innerHTML=`<div class="saved-text">${escapeHtml(q)}</div><button class="remove" aria-label="Usuń">×</button>`;
+    row.querySelector(".remove").onclick=()=>{
+      customQuestions.splice(i,1);
+      localStorage.setItem("ourCustomQuestions",JSON.stringify(customQuestions));
+      renderCustom();
+    };
+    box.appendChild(row);
+  });
+}
+
+function escapeHtml(text){
+  const div=document.createElement("div"); div.textContent=text; return div.innerHTML;
+}
+
 function renderSaved(){
   const box=$("savedList");
   if(!saved.length){
@@ -428,6 +607,7 @@ function renderSaved(){
   });
 }
 renderSaved();
+renderCustom();
 </script>
 </body>
 </html>
